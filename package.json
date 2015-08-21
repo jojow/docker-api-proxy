@@ -1,0 +1,39 @@
+{
+  "name": "docker-api-proxy",
+  "version": "0.1.0",
+  "author": "Johannes Wettinger <mail@jojow.de>",
+  "description": "Proxy for accessing Docker daemon's remote API",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jojow/docker-api-proxy"
+  },
+  "contributors": [
+    {
+      "name": "Johannes Wettinger",
+      "email": "mail@jojow.de"
+    }
+  ],
+  "license": "MIT",
+  "keywords": [
+    "docker",
+    "remote",
+    "api",
+    "proxy"
+  ],
+  "dependencies": {
+    "lodash": "~3.10.1",
+    "string": "~3.3.1",
+    "async": "~1.4.2",
+    "http-proxy": "~1.11.1",
+    "media-typer": "~0.3.0"
+  },
+  "bin": {
+    "docker-api-proxy": "./bin/proxy"
+  },
+  "scripts": {
+    "start": "./bin/proxy"
+  },
+  "engines": {
+    "node": ">= 0.10"
+  }
+}

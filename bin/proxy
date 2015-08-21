@@ -1,0 +1,121 @@
+#!/usr/bin/env node
+'use strict';
+
+var http = require('http');
+var httpProxy = require('http-proxy');
+var typer = require('media-typer');
+var async = require('async');
+var _ = require('lodash');
+
+var filter = require('../lib/filter');
+
+var proxyPort = process.env.PROXY_PORT || 2375;
+var targetUrl = process.env.TARGET_URL || 'http://127.0.0.1:2374'; //targetUrl = 'http://localhost:8888';
+
+
+
+// get JSON body
+function getJsonBody(req, callback) {
+  var bodyLength = parseInt(req.headers['content-length']);
+  var bodyEnc = typer.parse(req.headers['content-type']).parameters.charset || 'utf8';
+
+  if (!bodyLength || bodyLength === 0) {
+    req.jsonBody = {};
+
+    return callback();
+  }
+
+  req.rawBody = new Buffer(0);
+  //req.rawBody = '';
+  //req.setEncoding(bodyEnc);
+
+  req.on('readable', function() {
+    if (req.rawBody.length < bodyLength) {
+      var chunk;
+
+      while (null !== (chunk = req.read(bodyLength - req.rawBody.length))) {
+        //req.rawBody += chunk;
+        //req.rawBody = Buffer.concat([ req.rawBody, chunk ]);
+        req.rawBody = chunk;
+
+        //req.push(' ');
+        //req.unshift(new Buffer([ 1 ]));
+        //req.unshift(req.rawBody);
+        req.unshift(chunk);
+      }
+    } else {
+      try {
+        req.jsonBody = JSON.parse(req.rawBody.toString(bodyEnc));
+      } catch (err) {
+        return callback(err);
+      }
+
+      callback();
+    }
+  });
+};
+
+
+
+// proxy to forward requests
+var proxy = httpProxy.createProxyServer({
+  ws: false
+});
+
+proxy.on('error', function(err) {
+  console.error(err);
+});
+
+
+
+// HTTP server to listen for incoming requests
+var server = http.createServer(function(req, res) {
+  async.series([
+    function(callback) {
+      if (filter.inspectBody(req)) getJsonBody(req, callback);
+      else callback();
+    },
+    function(callback) {
+      var ar = filter.allowRequest(req);
+
+      if (ar === false || _.isString(ar)) {
+        res.writeHead(403, { 'Content-Type': 'text/plain' });
+
+        res.write('Forbidden');
+        if (_.isString(ar)) res.write(': ' + ar);
+
+        res.end();
+
+        console.log('[blocked]', req.method, req.url);
+      } else {
+        proxy.web(req, res, {
+          target: targetUrl
+        });
+
+        console.log('[allowed]', req.method, req.url);
+      }
+
+      callback();
+    }
+  ], function(err) {
+    if (err) {
+      res.writeHead(400, { 'Content-Type': 'text/plain' });
+      res.write('Invalid request: ' + err);
+      res.end();
+
+      console.error('[error]', err);
+    }
+  });
+});
+
+server.listen(proxyPort);
+
+console.log('proxy server listening on port ' + proxyPort);
+
+
+
+// simple echo server for testing
+/*var server = http.createServer(function(req, res) {
+  req.pipe(res);
+  console.log('echo');
+}).listen(8888);*/
