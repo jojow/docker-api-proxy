@@ -14,5 +14,5 @@ source $NVM_DIR/nvm.sh
 
 cd $APP_DIR
 
-#forever -c "npm start" -l ./forever.log -o ./out.log -e ./err.log .
-forever start -c "npm start" -l ./forever.log -o ./out.log -e ./err.log .
+#forever -a -c "npm start" -l ./forever.log -o ./out.log -e ./err.log .
+forever start -a -c "npm start" -l ./forever.log -o ./out.log -e ./err.log .
