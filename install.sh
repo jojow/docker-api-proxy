@@ -27,10 +27,11 @@ NODE_VERSION="0.10"
 
 
 if sys_has "apt-get"; then
+  export DEBIAN_FRONTEND="noninteractive"
   sudo apt-get -y update
   sudo apt-get -y install curl git python-software-properties python g++ make
 elif sys_has "yum"; then
-    sudo yum -y install curl git-core
+  sudo yum -y install curl git-core
 fi
 
 if ! sys_has "curl"; then
