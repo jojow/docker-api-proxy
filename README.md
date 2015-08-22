@@ -6,13 +6,17 @@ Configure Docker daemon to listen on a port on localhost (e.g., /etc/default/doc
 
     DOCKER_OPTS="-H tcp://127.0.0.1:2374 -H unix:///var/run/docker.sock"
 
-Install using curl:
+Prepare the host using curl (may require root access):
 
-    curl -L https://raw.github.com/jojow/docker-api-proxy/master/install.sh | bash
+    curl -L https://raw.github.com/jojow/docker-api-proxy/master/prepare.sh | bash
 
 Or using wget:
 
-    wget -qO- https://raw.github.com/jojow/docker-api-proxy/master/install.sh | bash
+    wget -qO- https://raw.github.com/jojow/docker-api-proxy/master/prepare.sh | bash
+
+Install using curl:
+
+    curl -L https://raw.github.com/jojow/docker-api-proxy/master/install.sh | bash
 
 By default, everything gets installed to $HOME/docker-api-proxy, so you can run it from there:
 
