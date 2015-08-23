@@ -27,10 +27,10 @@
     "media-typer": "~0.3.0"
   },
   "bin": {
-    "docker-api-proxy": "./bin/proxy"
+    "docker-api-proxy": "node ./bin/proxy"
   },
   "scripts": {
-    "start": "./bin/proxy"
+    "start": "node ./bin/proxy"
   },
   "engines": {
     "node": ">= 0.10"
