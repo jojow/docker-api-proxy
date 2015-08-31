@@ -33,6 +33,5 @@ You can also set certain environment variables to configure the API proxy:
 
 ## Contributors
 
-Michael Hahn
-
-Johannes Wettinger
+* Michael Hahn
+* Johannes Wettinger
