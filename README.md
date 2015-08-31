@@ -28,3 +28,11 @@ You can also set certain environment variables to configure the API proxy:
     export PROXY_PORT=2375
     export TARGET_URL=http://127.0.0.1:2374
     ./run.sh
+
+
+
+## Contributors
+
+Michael Hahn
+
+Johannes Wettinger
