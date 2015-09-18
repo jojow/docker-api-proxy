@@ -2,6 +2,8 @@
 
 Proxy for accessing Docker daemon's remote API. By default, the API proxy blocks all requests that can run containers and commands that are not covered by the stored images and their predefined commands. However, you can easily customize the filter logic by adapting the lib/filter.js file.
 
+Tested against Docker Remote API v1.20 and Docker 1.8.
+
 Configure Docker daemon to listen on a port on localhost (e.g., /etc/default/docker on Ubuntu):
 
     DOCKER_OPTS="-H tcp://127.0.0.1:2374 -H unix:///var/run/docker.sock"

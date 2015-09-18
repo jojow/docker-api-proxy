@@ -1,23 +1,28 @@
 #!/usr/bin/env node
 'use strict';
 
+var fs = require('fs');
 var http = require('http');
+var https = require('https');
 var httpProxy = require('http-proxy');
 var typer = require('media-typer');
 var async = require('async');
 var _ = require('lodash');
 
 var filter = require('../lib/filter');
+var action = require('../lib/action');
 
 var proxyPort = process.env.PROXY_PORT || 2375;
+var proxyProtocol = process.env.PROXY_PROTOCOL || 'http';
 var targetUrl = process.env.TARGET_URL || 'http://127.0.0.1:2374'; //targetUrl = 'http://localhost:8888';
 
 
 
 // get JSON body
-function getJsonBody(req, callback) {
+var getRequestJsonBody = function(req, callback) {
   var bodyLength = parseInt(req.headers['content-length']);
-  var bodyEnc = typer.parse(req.headers['content-type']).parameters.charset || 'utf8';
+  var bodyEnc = 'utf8';
+  if (req.headers['content-type']) bodyEnc = typer.parse(req.headers['content-type']).parameters.charset || 'utf8';
 
   if (!bodyLength || bodyLength === 0) {
     req.jsonBody = {};
@@ -47,7 +52,7 @@ function getJsonBody(req, callback) {
       try {
         req.jsonBody = JSON.parse(req.rawBody.toString(bodyEnc));
       } catch (err) {
-        return callback(err);
+        console.log('[error]', err, req.url);
       }
 
       callback();
@@ -69,10 +74,12 @@ proxy.on('error', function(err) {
 
 
 // HTTP server to listen for incoming requests
-var server = http.createServer(function(req, res) {
+var server;
+
+var requestListener = function(req, res) {
   async.series([
     function(callback) {
-      if (filter.inspectBody(req)) getJsonBody(req, callback);
+      if (filter.inspectRequestBody(req)) getRequestJsonBody(req, callback);
       else callback();
     },
     function(callback) {
@@ -92,6 +99,10 @@ var server = http.createServer(function(req, res) {
           target: targetUrl
         });
 
+        action.manageGateway(req, res, { targetUrl: targetUrl }, function(err) {
+          if (err) console.log('[error]', err);
+        });
+
         console.log('[allowed]', req.method, req.url);
       }
 
@@ -106,7 +117,16 @@ var server = http.createServer(function(req, res) {
       console.error('[error]', err);
     }
   });
-});
+};
+
+if (proxyProtocol === 'https') {
+  server = https.createServer({
+    key: fs.readFileSync('ssl/key.pem', 'utf8'),
+    cert: fs.readFileSync('ssl/cert.pem', 'utf8')
+  }, requestListener);
+} else {
+  server = http.createServer(requestListener);
+}
 
 server.listen(proxyPort);
 

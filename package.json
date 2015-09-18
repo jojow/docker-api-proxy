@@ -24,7 +24,8 @@
     "lodash": "~3.10.1",
     "async": "~1.4.2",
     "http-proxy": "~1.11.1",
-    "media-typer": "~0.3.0"
+    "media-typer": "~0.3.0",
+    "request": "~2.62.0"
   },
   "bin": {
     "docker-api-proxy": "node ./bin/proxy"
