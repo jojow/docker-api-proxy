@@ -15,9 +15,8 @@ fi
 
 NVM_DIR="$APP_DIR/.nvm"
 
-NVM_VERSION="0.26.0"
-NODE_VERSION="0.10"
-FOREVER_VERSION="0.15.1"
+NVM_VERSION="0.31.2"
+NODE_VERSION="4"
 
 
 
@@ -34,8 +33,6 @@ source $NVM_DIR/nvm.sh
 nvm install $NODE_VERSION
 nvm use $NODE_VERSION
 nvm alias default $NODE_VERSION
-
-npm install -g forever@$FOREVER_VERSION
 
 cd $APP_DIR
 

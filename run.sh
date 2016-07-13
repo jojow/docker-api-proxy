@@ -15,7 +15,4 @@ source $NVM_DIR/nvm.sh
 
 cd $APP_DIR
 
-export FOREVER_ROOT="$APP_DIR/.forever"
-
-#forever -a -c "npm start" -l forever.log -o out.log -e err.log $APP_DIR
-forever start -a -c "npm start" -l forever.log -o out.log -e err.log $APP_DIR
+npm run start-forever
