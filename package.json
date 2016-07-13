@@ -15,11 +15,11 @@
     "proxy"
   ],
   "dependencies": {
-    "lodash": "~3.10.1",
-    "async": "~1.4.2",
-    "http-proxy": "~1.11.1",
+    "lodash": "~4.13.1",
+    "async": "~2.0.0",
+    "http-proxy": "~1.14.0",
     "media-typer": "~0.3.0",
-    "request": "~2.62.0",
+    "request": "~2.73.0",
     "forever": "~0.15.2"
   },
   "bin": {
