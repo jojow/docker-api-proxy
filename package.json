@@ -23,7 +23,7 @@
     "forever": "~0.15.2"
   },
   "bin": {
-    "docker-api-proxy": "node bin/proxy"
+    "docker-api-proxy": "bin/proxy"
   },
   "scripts": {
     "start": "node bin/proxy",
