@@ -40,6 +40,31 @@ var getRequestJsonBody = function(req, callback) {
 
       while (null !== (chunk = req.read(bodyLength - req.rawBody.length))) {
         //req.rawBody += chunk;
+        req.rawBody = Buffer.concat([ req.rawBody, chunk ]);
+        //req.rawBody = chunk;
+
+        req.unshift(chunk);
+      }
+
+      console.log('[body]', req.method, req.url, req.rawBody.toString(bodyEnc));
+
+      try {
+        req.jsonBody = JSON.parse(req.rawBody.toString(bodyEnc));
+      } catch (err) {
+        console.log('[error]', err, req.url);
+      }
+
+      callback();
+    }
+  });
+
+/*
+  req.on('readable', function() {
+    if (req.rawBody.length < bodyLength) {
+      var chunk;
+
+      while (null !== (chunk = req.read(bodyLength - req.rawBody.length))) {
+        //req.rawBody += chunk;
         //req.rawBody = Buffer.concat([ req.rawBody, chunk ]);
         req.rawBody = chunk;
 
@@ -58,6 +83,7 @@ var getRequestJsonBody = function(req, callback) {
       callback();
     }
   });
+*/
 };
 
 
